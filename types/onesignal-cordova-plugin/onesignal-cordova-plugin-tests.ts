@@ -1,18 +1,19 @@
-window.plugins.OneSignal
-    .startInit("YOUR_APPID")
-    .handleNotificationReceived((jsonData) => {
-        console.log("Notification received:\n" + JSON.stringify(jsonData));
-    })
-    .handleNotificationOpened((jsonData) => {
-        console.log("Notification opened:\n" + JSON.stringify(jsonData));
-    })
-    .inFocusDisplaying(OneSignalCordovaPlugin.OSDisplayType.Notification)
-    .iOSSettings({
-        kOSSettingsKeyAutoPrompt: true,
-        kOSSettingsKeyInAppLaunchURL: false,
-    })
-    .endInit();
+function OneSignalInit() {
+    // Uncomment to set OneSignal device logging to VERBOSE
+    // window.plugins.OneSignal.setLogLevel(6, 0);
 
+    // NOTE: Update the setAppId value below with your OneSignal AppId.
+    window.plugins.OneSignal.setAppId("YOUR_ONESIGNAL_APP_ID");
+    window.plugins.OneSignal.setNotificationOpenedHandler(function(jsonData) {
+        console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+    });
+
+    // iOS - Prompts the user for notification permissions.
+    //    * Since this shows a generic native prompt, we recommend instead using an In-App Message to prompt for notification permission (See step 6) to better communicate to your users what notifications they will get.
+    window.plugins.OneSignal.promptForPushNotificationsWithUserResponse(function(accepted) {
+        console.log("User accepted notifications: " + accepted);
+    });
+}
 window.plugins.OneSignal.promptForPushNotificationsWithUserResponse((accepted) => {
     console.log("User accepted notifications: " + accepted);
 });
@@ -60,11 +61,5 @@ window.plugins.OneSignal.getIds((ids) => {
 });
 
 window.plugins.OneSignal.clearOneSignalNotifications();
-
-window.plugins.OneSignal.setSubscription(false);
-
-window.plugins.OneSignal.enableVibrate(false);
-
-window.plugins.OneSignal.enableSound(false);
 
 window.plugins.OneSignal.setLogLevel({ logLevel: 4, visualLevel: 4 });
